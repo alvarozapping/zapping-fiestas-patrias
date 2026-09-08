@@ -2,6 +2,7 @@
 
 import { type ChangeEvent, type CSSProperties, type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AdminHeader, SiteFooter } from "../upload-experience";
+import { ArrowRightIcon, ArrowUpRightIcon, ArrowsClockwiseIcon, CheckIcon, PlusIcon, TelevisionIcon, XIcon } from "../icons";
 
 type Status = "pending" | "approved" | "rejected";
 type Submission = { id: string; name: string; email: string; message: string; imageUrl: string; width: number; height: number; status: Status; createdAt: string };
@@ -15,7 +16,7 @@ export default function AdminDashboard({ displayName, role }: { displayName: str
   const backgroundInputRef = useRef<HTMLInputElement>(null);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [counts, setCounts] = useState<Counts>(EMPTY_COUNTS);
-  const [settings, setSettings] = useState<Settings>({ durationSeconds: 7, fadeSeconds: 2, backgrounds: ["#e90068", "#0039a6", "#d52b1e"] });
+  const [settings, setSettings] = useState<Settings>({ durationSeconds: 7, fadeSeconds: 2, backgrounds: ["#ff155b", "#0033a0", "#da291c"] });
   const [operators, setOperators] = useState<Operator[]>([]);
   const [operatorEmail, setOperatorEmail] = useState("");
   const [filter, setFilter] = useState<"all" | Status>("pending");
@@ -147,7 +148,7 @@ export default function AdminDashboard({ displayName, role }: { displayName: str
       {role === "owner" && <section className="team-panel page-width" aria-labelledby="team-title">
         <div className="team-copy"><p className="eyebrow">Accesos</p><h2 id="team-title">Equipo operador</h2><p>Agrega el correo institucional de quienes revisarán las fotos. Cada persona deberá entrar al panel con ese mismo correo.</p></div>
         <div className="team-management">
-          <form className="operator-form" onSubmit={addOperator}><label htmlFor="operator-email">Correo institucional</label><div><input id="operator-email" required type="email" placeholder="nombre@empresa.cl" value={operatorEmail} onChange={(event) => setOperatorEmail(event.target.value)} maxLength={160} /><button type="submit" disabled={teamSaving}>{teamSaving ? "Agregando…" : "+ Dar acceso"}</button></div></form>
+          <form className="operator-form" onSubmit={addOperator}><label htmlFor="operator-email">Correo institucional</label><div><input id="operator-email" required type="email" placeholder="nombre@empresa.cl" value={operatorEmail} onChange={(event) => setOperatorEmail(event.target.value)} maxLength={160} /><button type="submit" disabled={teamSaving}>{teamSaving ? "Agregando…" : <><PlusIcon /> Dar acceso</>}</button></div></form>
           <div className="operator-list">{operators.length ? operators.map((operator) => <div className="operator-row" key={operator.email}><span>{operator.email.slice(0, 1).toUpperCase()}</span><div><strong>{operator.email}</strong><small>Operador · Puede aprobar y rechazar fotos</small></div><button type="button" onClick={() => removeOperator(operator.email)}>Quitar</button></div>) : <p className="operator-empty">Todavía no has agregado operadores.</p>}</div>
           {teamNotice && <p className="team-notice" role="status">{teamNotice}</p>}
         </div>
@@ -155,7 +156,7 @@ export default function AdminDashboard({ displayName, role }: { displayName: str
 
       <section className="admin-grid page-width">
         <div className="review-panel">
-          <div className="panel-title-row"><div><p className="eyebrow">Moderación</p><h2>Fotos del carrete</h2></div><button className="refresh-button" type="button" onClick={load}>Actualizar</button></div>
+          <div className="panel-title-row"><div><p className="eyebrow">Moderación</p><h2>Fotos del carrete</h2></div><button className="refresh-button" type="button" onClick={load}><ArrowsClockwiseIcon /> Actualizar</button></div>
           <div className="filter-tabs" role="tablist" aria-label="Filtrar fotografías">
             {(["pending", "approved", "rejected", "all"] as const).map((item) => (
               <button key={item} className={filter === item ? "is-active" : ""} type="button" onClick={() => setFilter(item)}>
@@ -169,21 +170,21 @@ export default function AdminDashboard({ displayName, role }: { displayName: str
               {visible.map((item) => <SubmissionCard key={item.id} item={item} onPreview={setPreviewId} onStatus={changeStatus} onRemove={role === "owner" ? remove : undefined} />)}
             </div>
           ) : (
-            <div className="empty-list"><span>◎</span><strong>Todo tranquilo por aquí</strong><p>Las nuevas fotitos aparecerán automáticamente.</p></div>
+            <div className="empty-list"><span><TelevisionIcon /></span><strong>Todo tranquilo por aquí</strong><p>Las nuevas fotitos aparecerán automáticamente.</p></div>
           )}
         </div>
 
         {role === "owner" ? <aside className="settings-panel">
-          <div className="panel-title-row"><div><p className="eyebrow">Pantalla</p><h2>Armar el loop</h2></div><div className="screen-links"><a className="open-screen" href="/vmix" target="_blank">vMix ↗</a></div></div>
+          <div className="panel-title-row"><div><p className="eyebrow">Pantalla</p><h2>Armar el loop</h2></div><div className="screen-links"><a className="open-screen" href="/vmix" target="_blank"><TelevisionIcon /> vMix <ArrowUpRightIcon /></a></div></div>
           <label className="setting-field">Duración de cada foto <strong>{settings.durationSeconds} s</strong><input type="range" min="2" max="30" step="1" value={settings.durationSeconds} onChange={(event) => setSettings({ ...settings, durationSeconds: Number(event.target.value) })} /></label>
           <div className="setting-field"><div className="setting-label"><span>Tiempo del cambio</span><strong>{settings.fadeSeconds.toFixed(1)} s</strong></div><p>En vMix controla cuánto tarda el rollo hacia el costado.</p><input aria-label="Duración del cambio entre fotos" type="range" min="0.3" max="5" step="0.1" value={settings.fadeSeconds} onChange={(event) => setSettings({ ...settings, fadeSeconds: Number(event.target.value) })} /></div>
           <div className="setting-field"><div className="setting-label"><span>Fondos para fotos verticales</span><strong>{settings.backgrounds.length}/3</strong></div><p>Puedes combinar colores e imágenes. Se alternarán detrás de cada foto vertical.</p><div className="background-list">
-            {settings.backgrounds.map((background, index) => <div className="background-option" key={background + index}><span className="background-swatch" style={backgroundStyle(background)} />{background.startsWith("#") ? <><input aria-label={`Color de fondo ${index + 1}`} type="color" value={background} onChange={(event) => setSettings({ ...settings, backgrounds: settings.backgrounds.map((item, itemIndex) => itemIndex === index ? event.target.value : item) })} /><span>{background.toUpperCase()}</span></> : <span>Imagen {index + 1}</span>}{settings.backgrounds.length > 1 && <button type="button" aria-label={`Eliminar fondo ${index + 1}`} onClick={() => setSettings({ ...settings, backgrounds: settings.backgrounds.filter((_, itemIndex) => itemIndex !== index) })}>×</button>}</div>)}
-          </div><input ref={backgroundInputRef} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadBackground} />{settings.backgrounds.length < 3 && <div className="background-actions"><button className="add-color" type="button" onClick={() => setSettings({ ...settings, backgrounds: [...settings.backgrounds, "#e90068"] })}>+ Agregar color</button><button className="add-color" type="button" disabled={uploadingBackground} onClick={() => backgroundInputRef.current?.click()}>{uploadingBackground ? "Cargando…" : "+ Cargar imagen"}</button></div>}</div>
+            {settings.backgrounds.map((background, index) => <div className="background-option" key={background + index}><span className="background-swatch" style={backgroundStyle(background)} />{background.startsWith("#") ? <><input aria-label={`Color de fondo ${index + 1}`} type="color" value={background} onChange={(event) => setSettings({ ...settings, backgrounds: settings.backgrounds.map((item, itemIndex) => itemIndex === index ? event.target.value : item) })} /><span>{background.toUpperCase()}</span></> : <span>Imagen {index + 1}</span>}{settings.backgrounds.length > 1 && <button type="button" aria-label={`Eliminar fondo ${index + 1}`} onClick={() => setSettings({ ...settings, backgrounds: settings.backgrounds.filter((_, itemIndex) => itemIndex !== index) })}><XIcon /></button>}</div>)}
+          </div><input ref={backgroundInputRef} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadBackground} />{settings.backgrounds.length < 3 && <div className="background-actions"><button className="add-color" type="button" onClick={() => setSettings({ ...settings, backgrounds: [...settings.backgrounds, "#ff155b"] })}><PlusIcon /> Agregar color</button><button className="add-color" type="button" disabled={uploadingBackground} onClick={() => backgroundInputRef.current?.click()}>{uploadingBackground ? "Cargando…" : <><PlusIcon /> Cargar imagen</>}</button></div>}</div>
           <div className="mini-screen" style={backgroundStyle(settings.backgrounds[0])}><div className="mini-portrait"><img src="/fiestas-patrias/terremoto-empanada.png" alt="Vista previa vertical" /></div><span>{settings.durationSeconds}s</span></div>
-          <button className="primary-action" type="button" disabled={saving} onClick={saveSettings}>{saving ? "Guardando…" : "Guardar configuración"}<span>→</span></button>
+          <button className="primary-action" type="button" disabled={saving} onClick={saveSettings}>{saving ? "Guardando…" : "Guardar configuración"}<ArrowRightIcon /></button>
           {notice && <p className="admin-notice" role="status">{notice}</p>}
-        </aside> : <aside className="operator-panel"><p className="eyebrow">Tu perfil</p><h2>Operación de fotos</h2><p>Puedes revisar las imágenes en grande, aprobarlas o rechazarlas. La configuración del loop queda reservada al administrador principal.</p><div className="operator-screen-links"><a href="/vmix" target="_blank">Abrir salida vMix ↗</a></div>{notice && <p className="admin-notice" role="status">{notice}</p>}</aside>}
+        </aside> : <aside className="operator-panel"><p className="eyebrow">Tu perfil</p><h2>Operación de fotos</h2><p>Puedes revisar las imágenes en grande, aprobarlas o rechazarlas. La configuración del loop queda reservada al administrador principal.</p><div className="operator-screen-links"><a href="/vmix" target="_blank"><TelevisionIcon /> Abrir salida vMix <ArrowUpRightIcon /></a></div>{notice && <p className="admin-notice" role="status">{notice}</p>}</aside>}
       </section>
       <SiteFooter />
       {previewItem && <ReviewModal item={previewItem} onClose={() => setPreviewId(null)} onStatus={changeStatus} />}
@@ -192,7 +193,7 @@ export default function AdminDashboard({ displayName, role }: { displayName: str
 }
 
 function backgroundStyle(background?: string): CSSProperties {
-  if (!background || background.startsWith("#")) return { backgroundColor: background || "#040405" };
+  if (!background || background.startsWith("#")) return { backgroundColor: background || "#080809" };
   return { backgroundImage: `url("${background}")`, backgroundPosition: "center", backgroundSize: "cover" };
 }
 
@@ -206,8 +207,8 @@ function SubmissionCard({ item, onPreview, onStatus, onRemove }: { item: Submiss
     <button className={`submission-image ${item.height > item.width ? "is-vertical" : "is-horizontal"}`} type="button" onClick={() => onPreview(item.id)} aria-label={`Ver en grande la foto enviada por ${item.name}`}><img src={item.imageUrl} alt={`Foto enviada por ${item.name}`} />{item.message && <span className="submission-message-thumb">{item.message}</span>}<span className="zoom-hint">Ver grande</span></button>
     <div className="submission-info"><div><strong>{item.name}</strong><span>{item.email}</span><small>{date} · {item.width && item.height ? `${item.width} × ${item.height}` : "Tamaño original"}</small></div><span className={`status-badge status-${item.status}`}>{{ pending: "Por revisar", approved: "Aprobada", rejected: "Rechazada" }[item.status]}</span></div>
     <div className="card-actions">
-      {item.status !== "approved" && <button className="approve-button" type="button" onClick={() => onStatus(item.id, "approved")}>✓ Aprobar</button>}
-      {item.status !== "rejected" && <button type="button" onClick={() => onStatus(item.id, "rejected")}>× Rechazar</button>}
+      {item.status !== "approved" && <button className="approve-button" type="button" onClick={() => onStatus(item.id, "approved")}><CheckIcon /> Aprobar</button>}
+      {item.status !== "rejected" && <button type="button" onClick={() => onStatus(item.id, "rejected")}><XIcon /> Rechazar</button>}
       {onRemove && <button className="delete-button" type="button" onClick={() => onRemove(item.id)}>Eliminar</button>}
     </div>
   </article>;
@@ -218,7 +219,7 @@ function ReviewModal({ item, onClose, onStatus }: { item: Submission; onClose: (
   const date = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeStyle: "short" }).format(new Date(`${item.createdAt.replace(" ", "T")}Z`));
   return <div className="review-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
     <section className="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
-      <button className="review-modal-close" type="button" onClick={onClose} aria-label="Cerrar fotografía" autoFocus>×</button>
+      <button className="review-modal-close" type="button" onClick={onClose} aria-label="Cerrar fotografía" autoFocus><XIcon /></button>
       <div className={`review-modal-photo ${vertical ? "is-vertical" : "is-horizontal"}`}>
         <img src={item.imageUrl} alt={`Fotografía completa enviada por ${item.name}`} />
       </div>
@@ -230,8 +231,8 @@ function ReviewModal({ item, onClose, onStatus }: { item: Submission; onClose: (
         {item.message && <div className="review-message"><small>Mensaje</small><strong>{item.message}</strong></div>}
         <p className="review-meta">{date}<br />{item.width && item.height ? `${item.width} × ${item.height} px · ${vertical ? "Vertical" : "Horizontal"}` : "Tamaño original"}</p>
         <div className="review-modal-actions">
-          {item.status !== "approved" && <button className="approve-button" type="button" onClick={() => onStatus(item.id, "approved")}>✓ Aprobar foto</button>}
-          {item.status !== "rejected" && <button className="reject-button" type="button" onClick={() => onStatus(item.id, "rejected")}>× Rechazar foto</button>}
+          {item.status !== "approved" && <button className="approve-button" type="button" onClick={() => onStatus(item.id, "approved")}><CheckIcon /> Aprobar foto</button>}
+          {item.status !== "rejected" && <button className="reject-button" type="button" onClick={() => onStatus(item.id, "rejected")}><XIcon /> Rechazar foto</button>}
         </div>
       </aside>
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, DragEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, UploadSimpleIcon } from "./icons";
 
 type Dimensions = { width: number; height: number };
 
@@ -99,9 +100,9 @@ export default function UploadExperience() {
         <form className="upload-card" onSubmit={submit}>
           {sent ? (
             <div className="success-state" role="status">
-              <span className="success-mark">✓</span>
+              <span className="success-mark"><CheckIcon /></span>
               <p className="eyebrow">¡La recibimos!</p>
-              <h2>¡Quedó filete!</h2>
+              <h2>¡Quedó <em>filete!</em></h2>
               <p>El equipo de Zapping revisará tu foto antes de tirarla a la pantalla.</p>
               <button type="button" className="primary-action centered-action" onClick={reset}>Subir otra fotito</button>
             </div>
@@ -129,10 +130,10 @@ export default function UploadExperience() {
                   </>
                 ) : (
                   <>
-                    <span className="upload-icon" aria-hidden="true">↑</span>
-                    <strong>Arrastra tu fotaza aquí</strong>
-                    <span>o búscala en tu teléfono</span>
-                    <button type="button" onClick={() => inputRef.current?.click()}>Buscar una foto</button>
+                    <span className="upload-icon" aria-hidden="true"><UploadSimpleIcon /></span>
+                    <strong>Sube tu fotaza</strong>
+                    <span>tócala desde tu teléfono</span>
+                    <button type="button" onClick={() => inputRef.current?.click()}><UploadSimpleIcon />Buscar una foto</button>
                     <small>JPG, PNG o WEBP · Máximo 10 MB</small>
                   </>
                 )}
@@ -143,7 +144,7 @@ export default function UploadExperience() {
                 <label>Correo electrónico<input required type="email" placeholder="maria@correo.com" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={160} /></label>
               </div>
               {error && <p className="form-error" role="alert">{error}</p>}
-              <button className="primary-action" type="submit" disabled={submitting}>{submitting ? "Subiendo…" : "Subir mi fotito"}<span>→</span></button>
+              <button className="primary-action" type="submit" disabled={submitting}>{submitting ? "Subiendo…" : "Subir mi fotito"}<ArrowRightIcon /></button>
             </>
           )}
         </form>
@@ -183,9 +184,9 @@ export function AdminHeader() {
       <a href="/admin" aria-label="Panel administrador de Zapping"><span className="brand"><img src="/zapping/logotipo-pink.svg" alt="Zapping" /><span>Panel administrador</span></span></a>
       <nav className="main-nav" aria-label="Navegación administrativa">
         <a className="is-active" href="/admin">Moderación</a>
-        <a href="/vmix" target="_blank">vMix ↗</a>
+        <a href="/vmix" target="_blank">vMix <ArrowUpRightIcon /></a>
       </nav>
-      <a className="admin-public-link" href="/">Ver participación ↗</a>
+      <a className="admin-public-link" href="/">Ver participación <ArrowUpRightIcon /></a>
     </header>
   );
 }
