@@ -1,0 +1,1 @@
+ALTER TABLE `display_settings` ADD `fade_seconds` real DEFAULT 2 NOT NULL;

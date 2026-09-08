@@ -1,0 +1,1 @@
+CREATE INDEX `idx_submissions_status_created` ON `submissions` (`status`,`created_at`);
