@@ -215,11 +215,13 @@ function SubmissionCard({ item, onPreview, onStatus, onRemove }: { item: Submiss
 }
 
 function ReviewModal({ item, onClose, onStatus }: { item: Submission; onClose: () => void; onStatus: (id: string, status: Status) => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => { closeRef.current?.focus(); }, []);
   const vertical = item.height > item.width;
   const date = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeStyle: "short" }).format(new Date(`${item.createdAt.replace(" ", "T")}Z`));
   return <div className="review-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
     <section className="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
-      <button className="review-modal-close" type="button" onClick={onClose} aria-label="Cerrar fotografía" autoFocus><XIcon /></button>
+      <button ref={closeRef} className="review-modal-close" type="button" onClick={onClose} aria-label="Cerrar fotografía"><XIcon /></button>
       <div className={`review-modal-photo ${vertical ? "is-vertical" : "is-horizontal"}`}>
         <img src={item.imageUrl} alt={`Fotografía completa enviada por ${item.name}`} />
       </div>

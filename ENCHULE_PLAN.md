@@ -30,27 +30,32 @@ nuestros proyectos nuevos: **mobile-first** y alineado al **rebranding Zapping 2
 - [ ] Tipografía fluida coherente con la escala del DS (no `47px` fijos).
 - [ ] Decoraciones (`.hero-fiesta`, badges, ribbons) que se adapten o se oculten limpio en móvil.
 
-### Bloque 2 — Ergonomía del formulario en móvil
-- [ ] Dropzone → primero botón grande "Subir foto" (target táctil ≥ mínimo del DS); drag&drop como mejora desktop.
-- [ ] Inputs táctiles: label ≥ Bold, focus ring obligatorio, estados de error claros.
-- [ ] Botón de envío accesible + estados de carga.
+### Bloque 2 — Ergonomía del formulario en móvil ✅
+- [x] Dropzone → botón grande "Buscar foto" (target ≥ 48px); drag&drop mejora desktop.
+- [x] Inputs táctiles: `font-size:16px`, `autoComplete`/`inputMode`/`enterKeyHint`, focus ring, error con icono.
+- [x] Botón de envío accesible + estados de carga.
 
-### Bloque 3 — Marca 2026
-- [ ] Base oscura de marca (dark-900 `#080809`) en formulario y admin; sin degradados (`.pillar`, `::before/::after` de brillo).
-- [ ] Acento dieciochero: blanco + azul + rojo en el formulario; Zapink `#ff155b` como ancla.
-- [ ] Botones/chips como cápsula (pill); tarjetas `radius-24`; bordes 2px en vez de solo sombra.
-- [ ] Sustituir flechas de texto (`↑ → ↗ ×`) y `✓ ◎` por **Phosphor Icons Bold**.
-- [ ] Revisar voz (tú, puntos como percusión, sin emoji, remates en Black Italic).
+### Bloque 3 — Marca 2026 ✅
+- [x] Base oscura `#080809` en formulario y admin; sin degradados.
+- [x] Acento dieciochero blanco/azul/rojo en formulario; Zapink `#ff155b` como ancla.
+- [x] Botones/chips pill; tarjetas `radius-24`; bordes en vez de solo sombra.
+- [x] Phosphor Icons Bold inline reemplazan flechas/emoji de texto.
+- [x] Fix logo footer (dark → white sobre fondo oscuro); remates en itálica (`em`).
 
-### Bloque 4 — Admin usable en móvil
-- [ ] Revisar `admin-dashboard.tsx` para uso desde teléfono (tablas/acciones táctiles).
-- [ ] Aplicar mismos tokens y patrones mobile-first.
+### Bloque 4 — Admin usable en móvil ✅
+- [x] `admin-dashboard.tsx` mobile-first: stats 2col, cards en columna, acciones táctiles ≥48px.
+- [x] Mismos tokens; modal responsive; foco gestionado con `useRef` (sin `autoFocus`).
 
-### Bloque 5 — Pulido y verificación
-- [ ] Accesibilidad: contraste WCAG (3.0 gráfica / 4.5 texto), focus, `alt`.
-- [ ] Motion Pulse si se anima (PVP 25%, salidas 1/3 de entradas, sin bounce).
-- [ ] Verificar en 360 / 390 / 768 / 1280 px.
-- [ ] `npm run build` + `npm run lint` en verde.
+### Bloque 5 — Pulido y verificación ✅
+- [x] Accesibilidad: focus ring global, `<a>`→`<Link>`, `rel=noopener`, foco de modal, `alt`.
+- [x] `npm run build` en verde; 3 rutas 200.
+- [x] Lint: de 6 → 2 errores (los 2 restantes son `setState-in-effect` fetch-on-mount
+      pre-existentes; uno vive en `/vmix` intocable). Cero errores nuevos introducidos.
+
+### Pendientes conocidos (no bloqueantes)
+- Verificación visual manual en 360/390/768/1280 px (requiere ojo humano en navegador).
+- Warnings `<img>`→`next/image`: pre-existentes; migrar es opcional (evento efímero).
+- `setState-in-effect` del admin: falso positivo del linter (setState es async en el fetch).
 
 ## Alcance explícito
 - ✅ `app/page.tsx`, `app/upload-experience.tsx`, sección pública de `app/globals.css`

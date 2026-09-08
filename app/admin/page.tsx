@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getChatGPTUser, requireChatGPTUser } from "../chatgpt-auth";
 import { getAdminIdentity } from "../admin-auth";
 import AdminDashboard from "./admin-dashboard";
@@ -16,7 +17,7 @@ export default async function AdminPage() {
   if (!identity) {
     const signedInUser = await getChatGPTUser();
     if (!signedInUser) await requireChatGPTUser("/admin");
-    return <main className="admin-access-denied"><img src="/zapping/logotipo-pink.svg" alt="Zapping" /><p className="eyebrow">Panel administrador</p><h1>Acceso reservado</h1><p>Tu cuenta no tiene permiso para administrar este evento.</p><a href="/">Volver a la participación</a></main>;
+    return <main className="admin-access-denied"><img src="/zapping/logotipo-pink.svg" alt="Zapping" /><p className="eyebrow">Panel administrador</p><h1>Acceso reservado</h1><p>Tu cuenta no tiene permiso para administrar este evento.</p><Link href="/">Volver a la participación</Link></main>;
   }
   return <AdminDashboard displayName={identity.displayName} role={identity.role} />;
 }
