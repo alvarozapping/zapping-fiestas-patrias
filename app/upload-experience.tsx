@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { ChangeEvent, DragEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, UploadSimpleIcon } from "./icons";
 
 type Dimensions = { width: number; height: number };
 
@@ -99,9 +101,9 @@ export default function UploadExperience() {
         <form className="upload-card" onSubmit={submit}>
           {sent ? (
             <div className="success-state" role="status">
-              <span className="success-mark">✓</span>
+              <span className="success-mark"><CheckIcon /></span>
               <p className="eyebrow">¡La recibimos!</p>
-              <h2>¡Quedó filete!</h2>
+              <h2>¡Quedó <em>filete!</em></h2>
               <p>El equipo de Zapping revisará tu foto antes de tirarla a la pantalla.</p>
               <button type="button" className="primary-action centered-action" onClick={reset}>Subir otra fotito</button>
             </div>
@@ -121,7 +123,7 @@ export default function UploadExperience() {
               >
                 {preview ? (
                   <>
-                    <div className="upload-preview" style={{ background: "#e90068" }}>
+                    <div className="upload-preview">
                       <img src={preview} alt="Vista previa de la foto seleccionada" />
                       {name && <span className="preview-name">{name}</span>}
                     </div>
@@ -129,21 +131,21 @@ export default function UploadExperience() {
                   </>
                 ) : (
                   <>
-                    <span className="upload-icon" aria-hidden="true">↑</span>
-                    <strong>Arrastra tu fotaza aquí</strong>
-                    <span>o búscala en tu teléfono</span>
-                    <button type="button" onClick={() => inputRef.current?.click()}>Buscar una foto</button>
+                    <span className="upload-icon" aria-hidden="true"><UploadSimpleIcon /></span>
+                    <strong>Sube tu fotaza</strong>
+                    <span>tócala desde tu teléfono</span>
+                    <button type="button" onClick={() => inputRef.current?.click()}><UploadSimpleIcon />Buscar una foto</button>
                     <small>JPG, PNG o WEBP · Máximo 10 MB</small>
                   </>
                 )}
               </div>
 
               <div className="field-grid">
-                <label>Tu nombre<input required type="text" placeholder="Ej. María González" value={name} onChange={(event) => setName(event.target.value)} maxLength={80} /></label>
-                <label>Correo electrónico<input required type="email" placeholder="maria@correo.com" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={160} /></label>
+                <label>Tu nombre<input required type="text" name="name" autoComplete="name" enterKeyHint="next" placeholder="Ej. María González" value={name} onChange={(event) => setName(event.target.value)} maxLength={80} /></label>
+                <label>Correo electrónico<input required type="email" name="email" autoComplete="email" inputMode="email" enterKeyHint="send" placeholder="maria@correo.com" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={160} /></label>
               </div>
               {error && <p className="form-error" role="alert">{error}</p>}
-              <button className="primary-action" type="submit" disabled={submitting}>{submitting ? "Subiendo…" : "Subir mi fotito"}<span>→</span></button>
+              <button className="primary-action" type="submit" disabled={submitting}>{submitting ? "Subiendo…" : "Subir mi fotito"}<ArrowRightIcon /></button>
             </>
           )}
         </form>
@@ -171,7 +173,7 @@ export function Brand() {
 export function SiteHeader() {
   return (
     <header className="topbar public-topbar">
-      <a href="/" aria-label="Zapping Fiestas Patrias, inicio"><Brand /></a>
+      <Link href="/" aria-label="Zapping Fiestas Patrias, inicio"><Brand /></Link>
       <span className="event-status"><i /> 18 EN VIVO</span>
     </header>
   );
@@ -180,16 +182,16 @@ export function SiteHeader() {
 export function AdminHeader() {
   return (
     <header className="topbar admin-topbar">
-      <a href="/admin" aria-label="Panel administrador de Zapping"><span className="brand"><img src="/zapping/logotipo-pink.svg" alt="Zapping" /><span>Panel administrador</span></span></a>
+      <Link href="/admin" aria-label="Panel administrador de Zapping"><span className="brand"><img src="/zapping/logotipo-pink.svg" alt="Zapping" /><span>Panel administrador</span></span></Link>
       <nav className="main-nav" aria-label="Navegación administrativa">
-        <a className="is-active" href="/admin">Moderación</a>
-        <a href="/vmix" target="_blank">vMix ↗</a>
+        <Link className="is-active" href="/admin">Moderación</Link>
+        <a href="/vmix" target="_blank" rel="noopener">vMix <ArrowUpRightIcon /></a>
       </nav>
-      <a className="admin-public-link" href="/">Ver participación ↗</a>
+      <Link className="admin-public-link" href="/">Ver participación <ArrowUpRightIcon /></Link>
     </header>
   );
 }
 
 export function SiteFooter() {
-  return <footer><span><img src="/zapping/logotipo-dark.svg" alt="Zapping" /> · El 18 se vive en grande</span><span>Tus datos solo se usan para gestionar esta celebración.</span></footer>;
+  return <footer><span><img src="/zapping/logotipo-white.svg" alt="Zapping" /> · El 18 se vive en grande</span><span>Tus datos solo se usan para gestionar esta celebración.</span></footer>;
 }
